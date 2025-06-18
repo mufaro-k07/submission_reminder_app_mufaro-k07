@@ -39,8 +39,83 @@ Yuki, Shell Loops, submitted
 George, Shell Signals, not submitted
 EOF
 
+echo " "
 echo "Submissions.txt has been populated"
-cat "$main_dir/assets/submissions.txt"
 
+#Populating the config.env file
+cat <<EOF > "$main_dir/config/config.env"
+# This is the config file
+ASSIGNMENT="Shell Navigation"
+DAYS_REMAINING=2
+EOF
 
+echo " "
+echo "Config.env has been populated"
 
+#Populating the functions.sh script
+cat <<EOF > "$main_dir/modules/functions.sh"
+#!/bin/bash
+
+# Function to read submissions file and output students who have not submitted
+function check_submissions {
+    local submissions_file=$1
+    echo "Checking submissions in $submissions_file"
+
+    # Skip the header and iterate through the lines
+    while IFS=, read -r student assignment status; do
+        # Remove leading and trailing whitespace
+        student=$(echo "$student" | xargs)
+        assignment=$(echo "$assignment" | xargs)
+        status=$(echo "$status" | xargs)
+
+        # Check if assignment matches and status is 'not submitted'
+        if [[ "$assignment" == "$ASSIGNMENT" && "$status" == "not submitted" ]]; then
+            echo "Reminder: $student has not submitted the $ASSIGNMENT assignment!"
+        fi
+    done < <(tail -n +2 "$submissions_file") # Skip the header
+}
+EOF
+
+echo " "
+echo "Functions.sh has been populated into modules"
+chmod +x "$main_dir/modules/functions.sh"
+echo "Functions.sh is now executable"
+
+#Populating the reminder.sh script
+cat <<EOF > "$main_dir/app/reminder.sh"
+#!/bin/bash
+
+# Source environment variables and helper functions
+source ./config/config.env
+source ./modules/functions.sh
+
+# Path to the submissions file
+submissions_file="./assets/submissions.txt"
+
+# Print remaining time and run the reminder function
+echo "Assignment: $ASSIGNMENT"
+echo "Days remaining to submit: $DAYS_REMAINING days"
+echo "--------------------------------------------"
+
+check_submissions $submissions_file
+EOF
+
+echo " "
+echo "Reminder.sh has been populated into app/"
+chmod +x "$main_dir/app/reminder.sh"
+echo "Reminder.sh is now executable"
+
+#Creating the startup.sh and setting permissions
+
+cat <<EOF > "$main_dir/startup.sh"
+#!/bin/bash
+
+echo "Starting the submission reminder app..."
+./app/reminder.sh
+EOF
+
+chmod +x "$main_dir/startup.sh"
+echo "startup.sh has now been created and is executable"
+
+echo "Ensuring all .sh files are executable..."
+find "$main_dir" -type f -iname "*.sh" -exec chmod +x {} \;
