@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #This is the script to set up the directory structure and environment for the submission_reminder_app
-echo "Hello and Welcome to Mufaro's reminder app."
+echo "Hello and Welcome to Mufaro's reminder app!!😊"
 
 #1. Prompt the user for their name
 read -p "Please enter your name: " stuName
@@ -23,6 +23,7 @@ if [ -d "$main_dir" ]; then
 fi
 
 #If it doesn't exist, then it creates the parent directory and the respective directories inside
+echo " "
 echo "Creating directory structure..."
 mkdir -p "$main_dir"/{app,modules,assets,config}
 echo "Directory structure successfully created"
@@ -116,7 +117,7 @@ echo "Reminder.sh is now executable"
 cat > "${main_dir}/startup.sh" << 'EOF'
 #!/bin/bash
 
-echo "Running reminder.sh"
+echo "Running reminder.sh ⚙️..."
 ./app/reminder.sh
 EOF
 
@@ -127,5 +128,5 @@ echo "Ensuring all .sh files are executable ...."
 find "$main_dir" -type f -name "*.sh" -exec chmod +x {} \;
 
 echo " "
-echo "Environment setup is complete!, congratulations"
-echo "You may cd into your submission_reminder_'yourname' folder then ./startup.sh to run the startup script"
+echo "Environment setup is complete!, Congratulationss $stuName🎉"
+echo "You may ls to view the folder, cd into your submission_reminder_'yourname' folder then ./startup.sh to run the startup script"
